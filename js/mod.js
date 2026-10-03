@@ -6,6 +6,8 @@ let modInfo = {
 
 	discordName: "",
 	discordLink: "",
+	qqGroupName: "The Modding Nebula QQ Group",
+	qqGroupLink: "https://qm.qq.com/q/rpvauXUL1o",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }

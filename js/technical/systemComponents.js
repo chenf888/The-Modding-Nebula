@@ -197,6 +197,7 @@ var systemComponents = {
         The Prestige Tree made by Jacorb and Aarex
 		<br><br>
 		<div class="link" onclick="showTab('changelog-tab')">Changelog</div><br>
+		<a v-if="modInfo.qqGroupLink" class="link" v-bind:href="modInfo.qqGroupLink" target="_blank">{{modInfo.qqGroupName ? modInfo.qqGroupName : "QQ Group"}}</a><br>
         <span v-if="modInfo.discordLink"><a class="link" v-bind:href="modInfo.discordLink" target="_blank">{{modInfo.discordName}}</a><br></span>
         <a class="link" href="https://discord.gg/F3xveHV" target="_blank" v-bind:style="modInfo.discordLink ? {'font-size': '16px'} : {}">The Modding Tree Discord</a><br>
         <a class="link" href="http://discord.gg/wwQfgPa" target="_blank" v-bind:style="{'font-size': '16px'}">Main Prestige Tree server</a><br>
