@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<link rel="stylesheet" type="text/css" href="css/system-style.css" />
+	<link rel="stylesheet" type="text/css" href="css/bars.css" />
+	<link rel="stylesheet" type="text/css" href="css/components.css" />
+	<link rel="stylesheet" type="text/css" href="css/general-style.css" />
+	<link rel="stylesheet" type="text/css" href="css/misc.css" />
+	<link rel="stylesheet" type="text/css" href="css/other-tabs.css" />
+	<link rel="stylesheet" type="text/css" href="css/popup.css" />
+	<link rel="stylesheet" type="text/css" href="css/tree-node.css" />
+
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+
+	<script src="https://unpkg.com/vue@2.7.16/dist/vue.min.js"></script>
+	<script src="js/technical/break_eternity.js"></script>
+	<script src="js/technical/layerSupport.js"></script>
+
+	<script src="js/mod.js"></script>
+	<script src="js/technical/loader.js"></script>
+
+	<script src="js/technical/temp.js"></script>
+	<script src="js/technical/displays.js"></script>
+
+	<script src="js/game.js"></script>
+	<script src="js/utils.js"></script>
+	<script src="js/utils/easyAccess.js"></script>
+	<script src="js/technical/systemComponents.js"></script>
+	<script src="js/components.js"></script>
+	<script src="js/technical/treeView.js"></script>
+	<script src="js/technical/canvas.js"></script>
+	<script src="js/technical/particleSystem.js"></script>
+	<script src="js/utils/NumberFormating.js"></script>
+	<script src="js/utils/options.js"></script>
+	<script src="js/utils/save.js"></script>
+	<script src="js/utils/themes.js"></script>
+
+</head>
+
+
+<body onload="load()" onmousemove="updateMouse(event)">
+	<div id="app">
+		<canvas id="treeCanvas" class="canvas" v-if="!(tmp.gameEnded && !player.keepGoing)"></canvas>
+
+		<div v-if="false" id="loadingSection" class="fullWidth">
+			<h1>Loading... (If this takes too long it means there was a serious error!)←</h1>
+		</div>
+
+		<!-- Win screen -->
+		<div v-if="(tmp.gameEnded && !player.keepGoing)" class="fullWidth">
+			<br>
+			<h2>{{modInfo.name}} {{VERSION.withoutName}}</h2><br><br>
+			<h3 v-html="modInfo.winText"></h3><br>
+			<h3>Please check the Discord to see if there are new content updates!</h3><br><br>
+			<div v-if="!player.timePlayedReset">It took you {{formatTime(player.timePlayed)}} to beat the game.</div>
+			<br>
+			<button class="longUpg can" onclick="hardReset(true)">Play Again</button>&nbsp;&nbsp;&nbsp;&nbsp;<button
+				class="longUpg can" onclick="keepGoing()">Keep Going</button>
+			<br><br><br>
+			<span v-if="modInfo.discordLink"><a class="link" v-bind:href="modInfo.discordLink"
+					target="_blank">{{modInfo.discordName}}</a><br></span>
+			<a class="link" href="https://discord.gg/F3xveHV" target="_blank"
+				v-bind:style="modInfo.discordLink ? {'font-size': '16px'} : {}">The Modding Tree Discord</a><br>
+			<a class="link" href="http://discord.gg/wwQfgPa" target="_blank" v-bind:style="{'font-size': '16px'}">Main
+				Prestige Tree server</a><br>
+			<br><br>
+		</div>
+
+		<!-- Top HUD bar: resources + system buttons -->
+		<div id="hud" v-if="!(tmp.gameEnded && !player.keepGoing)">
+			<button id="hudToggle" class="overlayThing" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
+			<overlay-head id="hudResources"></overlay-head>
+			<div id="hudButtons">
+				<div id="version" class="overlayThing" onclick="showTab('changelog-tab')">{{VERSION.withoutName}}</div>
+				<img id="optionWheel" class="overlayThing" v-if="player.tab!='options-tab'" src="options_wheel.png"
+					onclick="showTab('options-tab')"></img>
+				<div id="info" class="overlayThing" v-if="player.tab!='info-tab'" onclick="showTab('info-tab')"><br>i
+				</div>
+				<div id="discord" class="overlayThing">
+					<img
+						onclick="window.open((modInfo.discordLink ? modInfo.discordLink : 'https://discord.gg/F3xveHV'),'mywindow')"
+						src="discord.png" target="_blank"></img>
+					<ul id="discord-links">
+						<li v-if="modInfo.discordLink"><a class="link" v-bind:href="modInfo.discordLink"
+								target="_blank">{{modInfo.discordName}}</a><br></li>
+						<li><a class="link" href="https://discord.gg/F3xveHV" target="_blank"
+								v-bind:style="modInfo.discordLink ? {'font-size': '16px'} : {}">The Modding Tree
+								Discord</a><br></li>
+						<li><a class="link" href="http://discord.gg/wwQfgPa" target="_blank"
+								v-bind:style="{'font-size': '16px'}">Main Prestige Tree server</a></li>
+					</ul>
+				</div>
+				<div class="sideLayers">
+					<div v-for="(node, index) in OTHER_LAYERS['side']">
+						<tree-node :layer='node' :abb='tmp[node].symbol' :size="'small'" :key="'side' + index"></tree-node>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Sidebar: quick navigation over the tree's layers -->
+		<div id="sidebar" v-if="!(tmp.gameEnded && !player.keepGoing)" v-bind:class="{closed: !options.sidebar}" onscroll="updateSidebarTips()">
+			<button id="sidebarHome" class="treeNode" onclick="showTab('none')"
+				v-bind:class="{can: true, active: player.tab === 'none'}">⌂</button>
+			<div v-for="(row, r) in TREE_LAYERS" :key="'srow' + r">
+				<div v-for="node in row" v-if="tmp[node] && tmp[node].layerShown && tmp[node].layerShown !== 'ghost'">
+					<sidebar-node :layer="node" :abb="tmp[node].symbol"
+						v-bind:class="{active: player.tab === node}"></sidebar-node>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main area: tree overview page or a layer's page -->
+		<div id="main" v-if="!(tmp.gameEnded && !player.keepGoing)" v-bind:class="{closed: !options.sidebar}">
+			<tree-view v-if="player.tab === 'none'" :lines="treeLines">
+				<layer-tab :layer="player.navTab === 'none' ? 'tree-tab' : player.navTab" :key="'treeHome'"></layer-tab>
+			</tree-view>
+			<div v-else id="mainTab" onscroll="resizeCanvas()">
+				<div v-for="layer in LAYERS">
+					<div v-if="player.tab==layer">
+						<layer-tab :layer="layer" :back="'big'" :spacing="'55px'" :key="'tab' + layer"></layer-tab>
+					</div>
+				</div>
+				<bg :layer="player.tab"></bg>
+			</div>
+		</div>
+
+		<!-- Popups -->
+		<div class="popup-container">
+			<transition-group name="fade">
+				<div v-for="popup,index in activePopups" class="popup" v-bind:class="popup.type"
+					v-bind:key="'p' + popup.id" v-on:click="() => {activePopups.splice(index, 1)}"
+					v-bind:style="popup.color ? {'background-color': popup.color} : {}">
+					<h3>{{popup.title}}</h3><br>
+					<h2 v-html="popup.message"></h2>
+				</div>
+			</transition-group>
+		</div>
+		<div class="particle-container">
+			<div v-for="particle,index in particles">
+				<particle :data="particle" :index="index" v-bind:key="'b' + particle.id"></particle>
+			</div>
+		</div>
+
+		<div class="bg2" v-bind:style="tmp.backgroundStyle"></div>
+
+	</div>
+</body>
+</html>

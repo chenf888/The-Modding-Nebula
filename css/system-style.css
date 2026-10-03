@@ -1,0 +1,568 @@
+* {
+	transition-duration: 0.5s;
+	text-align: center;
+	font-family: "Inconsolata", monospace;
+	font-weight: bold;
+	table-align: center;
+	margin: auto;
+	-webkit-text-size-adjust: none;
+	text-size-adjust: none;
+
+}
+
+*:focus {
+	outline: none;
+	webkit-outline: none;
+}
+
+html, body {
+	min-height: 100%;
+	height: 100%;
+}
+
+td {
+	padding: 0
+}
+
+.upgTable {
+	display: flex !important;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	max-width: 100%;
+	margin: 0 auto;
+}
+
+.upgRow {
+	display: flex !important;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	max-width: 100%;
+	margin: 0 auto;
+}
+
+.upgAlign {
+	vertical-align: 0
+}
+
+.bigUpgAlign {
+	vertical-align: 0
+}
+
+.treeThing {
+	margin: 0 10px 0 10px;
+	vertical-align: middle;
+}
+
+.can.upg:hover {
+	z-index: 2
+}
+
+.can.buyable:hover {
+	z-index: 2
+}
+
+.back {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: transparent;
+	border: 1px solid transparent;
+	color: var(--color);
+	font-size: 40px;
+	cursor: pointer;
+}
+
+.other-back {
+	position: absolute;
+	top: 0;
+	left: 60px;
+	background-color: transparent;
+	border: 1px solid transparent;
+	color: var(--color);
+	font-size: 60px;
+	cursor: pointer;
+}
+
+.back:hover {
+	transform: scale(1.1, 1.1);
+	text-shadow: 0 0 7px var(--color);
+}
+
+.hidden {
+	visibility: hidden;
+	height: 50px !important;
+}
+
+.canvas {
+	top: 0;
+	left: 0;
+	position: absolute;
+	z-index: -999;
+}
+
+.left {
+	position: absolute;
+	left: 0;
+}
+
+.remove {
+	height: 24px;
+	width: 24px;
+	cursor: pointer;
+}
+
+.remove:hover {
+	transform: scale(1.1, 1.1);
+}
+
+.col {
+	min-width: 49.5%;
+	max-width: 49.5%;
+	width: 49.5%;
+	height: 100%;
+	min-height: 100%;
+	column-span: 1;
+	position: absolute;
+	overflow-y: auto;
+	overflow-x: auto;
+	transition-duration: 0s
+}
+
+.instant {
+	transition-duration: 0s !important
+}
+
+.fast {
+	transition:color none
+}
+
+.col.right {
+	top: 0;
+	right: 0;
+}
+
+#app {
+	column-count: 2;
+	column-width: 50%;
+	min-height: 100%;
+}
+
+.vl2 {
+	border-left: 3px solid var(--color);
+	height: 100%;
+}
+
+ul {
+	list-style-type: none;
+}
+
+.fullWidth {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	min-width: 100%;
+	overflow-y: auto;
+	overflow-x: auto;
+	transition-duration: 0s
+}
+
+.tooltipBox { 
+	position: relative;
+  }
+  
+  .tooltipBox:hover .tooltip{
+	opacity: 1;
+  }
+
+  .forceTooltip .tooltip{
+	opacity: 1;
+  }
+  
+.respecCheckbox {
+	display: inline-block;
+}
+
+
+#loadingSection {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.treeOverlay {
+	pointer-events:none;
+	overflow:hidden;
+}
+
+.front {
+	z-index: 30000
+}
+
+.overlayThing {
+	z-index: 10000;
+	pointer-events:auto;
+}
+
+.sideLayers {
+	z-index: 10000;
+	pointer-events:auto;
+	position: absolute;
+	right: 55px;
+	top: 65px;
+	background-color: transparent;
+}
+
+button > * {
+	pointer-events:none;
+}
+
+.ghost {
+	visibility: hidden
+}
+
+#treeTab td button {
+    margin: 0 10px;
+}
+
+.bg {
+	z-index: -9000;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background-color: transparent;
+	top: 0
+}
+
+.bg2 {
+	z-index: -9009;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0
+}
+
+.noBackground {
+	background: transparent !important;
+	background-image: none !important;
+	--background: transparent !important;
+}
+
+
+/* ============================================================
+   MTGA hybrid layout: top HUD + collapsible sidebar + main area
+   with the tree as a pannable / zoomable overview page.
+   Everything is themed through the same CSS variables as the
+   rest of TMT, so developer themes keep working.
+   ============================================================ */
+
+.overlayHead {
+	position: relative;
+	z-index: 1000;
+}
+
+/* ---- Top HUD bar ---- */
+#hud {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	min-height: 64px;
+	display: flex;
+	align-items: center;
+	z-index: 25000;
+	background: var(--background);
+	border-bottom: 3px solid var(--color);
+	padding: 0 10px;
+}
+
+#hudToggle {
+	background: transparent;
+	border: 2px solid var(--color);
+	border-radius: 8px;
+	color: var(--color);
+	font-size: 20px;
+	width: 44px;
+	height: 44px;
+	cursor: pointer;
+	margin-right: 10px;
+	flex: none;
+}
+
+#hudToggle:hover {
+	transform: scale(1.05, 1.05);
+	text-shadow: 0 0 7px var(--color);
+}
+
+#hud #hudResources {
+	width: auto;
+	padding: 0;
+	flex: 1;
+	min-width: 0;
+}
+
+#hudButtons {
+	display: flex;
+	align-items: center;
+	flex: none;
+}
+
+#hud #version {
+	position: static;
+	margin: 0 8px;
+}
+
+#hud #optionWheel {
+	position: static;
+	height: 44px;
+	width: 44px;
+	margin: 0 8px;
+}
+
+#hud #info {
+	position: static;
+	width: 40px;
+	height: 44px;
+	margin: 0 8px;
+}
+
+#hud #discord {
+	position: relative;
+	top: 0;
+	left: 0;
+	width: 40px;
+	height: 40px;
+	margin: 0 8px;
+}
+
+/* The links drop down BELOW the discord icon: a leftward flyout would
+   cover the option/info buttons, and being inside #discord it would stay
+   open while the cursor crosses them, blocking the buttons */
+#hud #discord-links {
+	left: auto;
+	right: 0;
+	top: 100%;
+	padding: 6px 8px;
+	margin: 0;
+	text-align: right;
+	background: var(--background_tooltip);
+	border-radius: 6px;
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity .3s ease;
+}
+
+#hud #discord:hover #discord-links {
+	left: auto;
+	visibility: visible;
+	opacity: 1;
+}
+
+#hud .sideLayers {
+	position: static;
+	display: flex;
+	align-items: center;
+}
+
+#hud .sideLayers .smallNode {
+	margin: 0 4px;
+}
+
+/* ---- Sidebar quick navigation ---- */
+#sidebar {
+	position: fixed;
+	top: 67px;
+	left: 0;
+	bottom: 0;
+	width: 88px;
+	z-index: 24000;
+	background: var(--background);
+	border-right: 3px solid var(--color);
+	padding: 8px 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+#sidebar.closed {
+	left: -91px;
+}
+
+#sidebar .treeNode, #sidebar .treeButton {
+	height: 56px;
+	width: 56px;
+	font-size: 22px;
+	margin: 5px auto;
+	display: block;
+	position: relative;
+}
+
+#sidebar .treeNode.active, #sidebar .treeButton.active {
+	box-shadow: var(--hqProperty2a), 0 0 16px var(--points);
+}
+
+#sidebarHome {
+	background-color: var(--color);
+	color: rgba(0, 0, 0, 0.5);
+	cursor: pointer;
+}
+
+#sidebarHome.active {
+	box-shadow: var(--hqProperty2a), 0 0 16px var(--points);
+}
+
+/* ---- Main area ---- */
+#main {
+	position: fixed;
+	top: 67px;
+	left: 91px;
+	right: 0;
+	bottom: 0;
+	z-index: 100;
+	overflow: hidden;
+}
+
+#main.closed {
+	left: 0;
+}
+
+#mainTab {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* ---- Tree overview page (pan/zoom) ---- */
+.treeViewport {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+	cursor: grab;
+	touch-action: none;
+}
+
+.treeViewport.dragging {
+	cursor: grabbing;
+}
+
+.treePlane {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform-origin: 0 0;
+	will-change: transform;
+	width: max-content;
+	min-width: 100%;
+}
+
+.treeContent {
+	position: relative;
+	z-index: 1;
+	width: max-content;
+	min-width: 100%;
+	padding: 30px 60px 60px 60px;
+}
+
+/* Tree rows should never wrap inside the plane: pan instead */
+.treeContent .upgRow, .treeContent .upgTable {
+	flex-wrap: nowrap;
+	max-width: none;
+	width: max-content;
+}
+
+.treeBranches {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.treeControls {
+	position: absolute;
+	right: 14px;
+	bottom: 14px;
+	display: flex;
+	flex-direction: column;
+	z-index: 5;
+}
+
+.treeCtrl {
+	width: 40px;
+	height: 40px;
+	margin: 4px 0;
+	border: var(--hqProperty1);
+	border-color: rgba(0, 0, 0, 0.125);
+	border-radius: 8px;
+	background-color: var(--color);
+	color: rgba(0, 0, 0, 0.5);
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.treeCtrl:hover {
+	box-shadow: 0 0 10px var(--points);
+}
+
+@media (max-width: 700px) {
+	#main {
+		left: 0;
+	}
+	#sidebar:not(.closed) {
+		left: 0;
+		box-shadow: 6px 0 20px rgba(0, 0, 0, 0.5);
+	}
+}
+
+/* ---- Sidebar tooltips pop out to the right of the node ----
+   The tooltip is placed by placeTip()/updateSidebarTips() with
+   position: fixed so it can escape the sidebar's clipping; the
+   arrow sits on its left edge, pointing left at the node. */
+#sidebar .tooltip::after {
+	top: 50%;
+	bottom: auto;
+	left: -10px;
+	margin: 0;
+	transform: translateY(-50%);
+	border-color: transparent var(--background_tooltip) transparent transparent;
+}
+
+/* Transforms on ancestors would re-anchor the fixed tooltip,
+   so sidebar nodes don't scale on hover/notify */
+#sidebar .can:hover,
+#sidebar .treeNode.notify,
+#sidebar .treeButton.notify {
+	transform: none;
+}
+
+/* HUD side-layer buttons: flip their tooltips below the node,
+   above would fall off the top of the screen; right-anchor them
+   so they never spill past the right screen edge */
+#hud .sideLayers .tooltip {
+	bottom: auto;
+	top: 100%;
+	left: auto;
+	right: 0;
+	transform: none;
+	margin: 5px 0 0;
+}
+
+#hud .sideLayers .tooltip::after {
+	top: auto;
+	bottom: 100%;
+	left: auto;
+	right: 24px;
+	margin: 0;
+	border-color: transparent transparent var(--background_tooltip) transparent;
+}
+
